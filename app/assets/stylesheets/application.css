@@ -228,3 +228,6 @@ div.field_with_errors input{
 .error_messages ul li{
   font-weight: bold;
 }
+.table td{
+	border: 1px;
+}
