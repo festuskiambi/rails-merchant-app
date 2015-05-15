@@ -25,7 +25,7 @@ class OrderItemsController < ApplicationController
   # POST /order_items
   # POST /order_items.json
   def create
-    @order_item = OrderItem.new(order_item_params)
+     @order_item = OrderItem.new(product_id: params[:product_id])
 
     respond_to do |format|
       if @order_item.save
@@ -61,15 +61,18 @@ class OrderItemsController < ApplicationController
       format.json { head :no_content }
     end
   end
-
-  private
+  def order_item_params
+      params.require(:order_item).permit(:product_id, :order_id, :quantity)
+    end
+   
+private
     # Use callbacks to share common setup or constraints between actions.
     def set_order_item
       @order_item = OrderItem.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def order_item_params
+     def order_item_params
       params.require(:order_item).permit(:product_id, :order_id, :quantity)
     end
 end
