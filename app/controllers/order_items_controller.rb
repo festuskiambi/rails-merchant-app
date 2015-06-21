@@ -25,11 +25,11 @@ class OrderItemsController < ApplicationController
   # POST /order_items
   # POST /order_items.json
   def create
-     @order_item = OrderItem.new(product_id: params[:product_id])
+     @order_item = OrderItem.new(product_id: params[:product_id], order_id: @order.id)
 
     respond_to do |format|
       if @order_item.save
-        format.html { redirect_to @order_item, notice: 'Order item was successfully created.' }
+        format.html { redirect_to @order, notice: 'Successfully added product to cart.' }
         format.json { render :show, status: :created, location: @order_item }
       else
         format.html { render :new }
@@ -64,8 +64,17 @@ class OrderItemsController < ApplicationController
   def order_item_params
       params.require(:order_item).permit(:product_id, :order_id, :quantity)
     end
+
    
 private
+def load_order
+  begin
+    @order = Order.find(session[:order_id])
+  rescue ActiveRecord::RecordNotFound
+    @order = Order.create(status: "unsubmitted")
+    session[:order_id] = @order.id
+  end
+end
     # Use callbacks to share common setup or constraints between actions.
     def set_order_item
       @order_item = OrderItem.find(params[:id])
